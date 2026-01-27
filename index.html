@@ -3,10 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>nigga</title>
+<title>Chat</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- Title -->
+<div id="title">
+  <img src="title.png" alt="Title">
+</div>
 
 <div id="chat">
   <div id="messages"></div>
@@ -29,16 +34,15 @@ const chatHistory = [
   { role: "system", content: "You are Dolphin3 running locally via LM Studio." }
 ];
 
-// Add a message to the chat
 function addMessage(text, cls) {
   const div = document.createElement("div");
   div.className = cls;
   div.textContent = text;
   messagesDiv.appendChild(div);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  return div;
 }
 
-// Send user message
 async function send() {
   const text = promptInput.value.trim();
   if (!text) return;
@@ -47,31 +51,61 @@ async function send() {
   promptInput.value = "";
   chatHistory.push({ role: "user", content: text });
 
+  // Empty bot message (will fill live)
+  const botDiv = addMessage("AI: ", "bot");
+
   try {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: MODEL, messages: chatHistory, temperature: 0.7 })
+      body: JSON.stringify({
+        model: MODEL,
+        messages: chatHistory,
+        temperature: 0.7,
+        stream: true
+      })
     });
 
     if (!res.ok) throw new Error("HTTP " + res.status);
 
-    const data = await res.json();
-    const reply = data.choices[0].message.content;
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let fullText = "";
 
-    chatHistory.push({ role: "assistant", content: reply });
-    addMessage("AI: " + reply, "bot");
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      const lines = chunk.split("\n");
+
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        if (line.includes("[DONE]")) break;
+
+        const json = JSON.parse(line.replace("data: ", ""));
+        const token = json.choices?.[0]?.delta?.content;
+        if (token) {
+          fullText += token;
+          botDiv.textContent = "AI: " + fullText;
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+      }
+    }
+
+    chatHistory.push({ role: "assistant", content: fullText });
 
   } catch (err) {
-    addMessage("Error: " + err.message, "error");
+    botDiv.textContent = "Error: " + err.message;
+    botDiv.className = "error";
   }
 }
 
-// Event listeners
 sendBtn.addEventListener("click", send);
-promptInput.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+promptInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") send();
+});
 </script>
 
 </body>
 </html>
-
