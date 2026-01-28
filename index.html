@@ -1,75 +1,76 @@
-/* ===== Basic page styling ===== */
-body {
-  background: #0b0b0b;
-  color: #eaeaea;
-  font-family: monospace;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sinister.ai</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-/* ===== Title above chat ===== */
-#title {
-  font-size: 48px;
-  font-weight: bold;
-  color: #f87171;
-  margin-bottom: 20px;
-  text-align: center;
-}
+  <!-- TITLE ABOVE CHAT -->
+  <div id="title">sinister.ai</div>
 
-/* ===== Chat container ===== */
-#chat {
-  width: 520px;
-  max-width: 95vw;
-  height: 650px;
-  border: 1px solid #333;
-  background: #111;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+  <!-- CHAT CONTAINER -->
+  <div id="chat">
+    <div id="messages"></div>
+    <div id="input">
+      <input id="prompt" placeholder="Type your message..." autocomplete="off" />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
 
-/* ===== Messages area ===== */
-#messages {
-  flex: 1;
-  padding: 12px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-}
+  <script>
+    const API_URL = "https://fruits-shaved-knives-incentive.trycloudflare.com/v1/chat/completions";
+    const MODEL = "Dolphin3:8b";
+    const messagesDiv = document.getElementById("messages");
+    const promptInput = document.getElementById("prompt");
+    const sendBtn = document.getElementById("sendBtn");
 
-/* ===== Message styling ===== */
-.user { color: #7dd3fc; margin-bottom: 8px; }
-.bot { color: #86efac; margin-bottom: 12px; }
-.error { color: #f87171; margin-bottom: 12px; }
+    // Chat memory
+    const chatHistory = [
+      { role: "system", content: "sinister.ai assistant ready" }
+    ];
 
-/* ===== Input area ===== */
-#input {
-  display: flex;
-  border-top: 1px solid #333;
-}
+    // Add a message to the chat
+    function addMessage(text, cls) {
+      const div = document.createElement("div");
+      div.className = cls;
+      div.textContent = text;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
 
-input {
-  flex: 1;
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  outline: none;
-  font-family: monospace;
-}
+    // Send user message
+    async function send() {
+      const text = promptInput.value.trim();
+      if (!text) return;
+      addMessage("You: " + text, "user");
+      promptInput.value = "";
+      chatHistory.push({ role: "user", content: text });
 
-button {
-  background: #1f1f1f;
-  color: #fff;
-  border: none;
-  padding: 12px 18px;
-  cursor: pointer;
-  font-family: monospace;
-}
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ model: MODEL, messages: chatHistory, temperature: 0.7 })
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const reply = data.choices[0].message.content;
+        chatHistory.push({ role: "assistant", content: reply });
+        addMessage("sinister.ai: " + reply, "bot");
+      } catch (err) {
+        addMessage("Error: " + err.message, "error");
+      }
+    }
 
-button:hover {
-  background: #333;
-}
+    // Event listeners
+    sendBtn.addEventListener("click", send);
+    promptInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") send();
+    });
+  </script>
+
+</body>
+</html>
