@@ -1,6 +1,6 @@
 /* ===== Basic page styling ===== */
 body {
-  background: #292929;  /* donkere achtergrond */
+  background: #292929;  /* oude achtergrondkleur terug */
   color: #eaeaea;
   font-family: monospace;
   display: flex;
@@ -9,7 +9,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  gap: 10px;
+  gap: 20px; /* iets meer ruimte tussen banner en chat */
 }
 
 /* ===== Banner container (losstaand) ===== */
@@ -21,7 +21,7 @@ body {
 }
 
 #banner {
-  max-width: 50px;  /* 3x kleiner dan eerdere 150px */
+  max-width: 250px; /* veel groter */
   height: auto;
   display: block;
 }
