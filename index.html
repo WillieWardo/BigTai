@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>nigger ai</title>
+  <title>AI Chat</title> <!-- aangepaste naam -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div id="chat">
+    <!-- Banner image bovenaan -->
+    <img src="banner.png" alt="Chat Banner" id="banner">
+
     <div id="messages"></div>
 
     <div id="input">
@@ -27,7 +30,7 @@
 
     // Chat memory
     const chatHistory = [
-      { role: "system", content: "nigger" }
+      { role: "system", content: "You are a helpful AI assistant." } // aangepaste system prompt
     ];
 
     // Add a message to the chat
@@ -65,7 +68,7 @@
         const reply = data.choices[0].message.content;
 
         chatHistory.push({ role: "assistant", content: reply });
-        addMessage("nigger ai: " + reply, "bot");
+        addMessage("AI: " + reply, "bot");
 
       } catch (err) {
         addMessage("Error: " + err.message, "error");
@@ -81,5 +84,3 @@
 
 </body>
 </html>
-
-
