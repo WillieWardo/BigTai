@@ -4,10 +4,20 @@ body {
   color: #eaeaea;
   font-family: monospace;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* banner boven chat */
+  justify-content: flex-start;
   align-items: center;
   height: 100vh;
   margin: 0;
+  gap: 10px; /* ruimte tussen banner en chat */
+}
+
+/* ===== Banner styling (losstaand) ===== */
+#banner {
+  width: auto;
+  max-width: 80%;  /* groot maar past netjes */
+  height: auto;
+  display: block;  /* clean, geen border of outline */
 }
 
 /* ===== Chat container ===== */
@@ -23,23 +33,13 @@ body {
   overflow: hidden;
 }
 
-/* ===== Banner styling ===== */
-#banner {
-  width: 100%;          /* vult de hele breedte van de chat */
-  height: auto;         /* houdt verhouding */
-  max-height: 150px;    /* groot maar niet overdreven */
-  object-fit: cover;    /* snapt hoe het de container vult */
-  border-bottom: 1px solid #333; /* subtiele scheiding */
-  display: block;
-}
-
 /* ===== Messages area ===== */
 #messages {
   flex: 1;
   padding: 12px;
   overflow-y: auto;
   white-space: pre-wrap;
-  background: #111;     /* iets donkerder dan body voor contrast */
+  background: #111;
 }
 
 /* ===== Message styling ===== */
