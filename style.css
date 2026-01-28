@@ -1,15 +1,15 @@
 /* ===== Basic page styling ===== */
 body {
-  background: #0b0b0b;
+  background: #292929;  /* donkere achtergrond */
   color: #eaeaea;
   font-family: monospace;
   display: flex;
-  flex-direction: column; /* banner boven chat */
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   height: 100vh;
   margin: 0;
-  gap: 20px; /* ruimte tussen banner en chat panel */
+  gap: 10px;
 }
 
 /* ===== Banner container (losstaand) ===== */
@@ -21,7 +21,7 @@ body {
 }
 
 #banner {
-  max-width: 80%;
+  max-width: 50px;  /* 3x kleiner dan eerdere 150px */
   height: auto;
   display: block;
 }
@@ -35,7 +35,7 @@ body {
   background: #111;
   display: flex;
   flex-direction: column;
-  border-radius: 10px; /* alleen voor chatpanel */
+  border-radius: 10px;
   overflow: hidden;
 }
 
