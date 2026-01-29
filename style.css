@@ -32,7 +32,7 @@ body {
 #chat {
   width: 520px;
   max-width: 95vw;
-  height: 800px;
+  height: 750px;
   border: 1px solid #333;
   background: #111;
   display: flex;
@@ -81,6 +81,7 @@ button {
 button:hover {
   background: #333;
 }
+
 
 
 
