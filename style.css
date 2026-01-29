@@ -21,10 +21,10 @@ body {
 }
 
 #description {
-  font-size: 19px;
+  font-size: 14px;
   font-weight: bold;
   color: #f#7a7a7a;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
@@ -81,5 +81,6 @@ button {
 button:hover {
   background: #333;
 }
+
 
 
